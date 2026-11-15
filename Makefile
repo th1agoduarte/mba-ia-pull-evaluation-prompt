@@ -83,20 +83,20 @@ test-one: $(PY) ## Roda um teste: make test-one T=test_minimum_techniques
 	$(PY) -m pytest "tests/test_prompts.py::TestPrompts::$(T)" -v
 
 pull: $(PY) ## Pull do prompt v1 do Hub -> prompts/bug_to_user_story_v1.yml
-	$(RUN) src/pull_prompts.py
+	@$(RUN) src/pull_prompts.py
 
 push: $(PY) ## Push do prompt v2 -> {USERNAME_LANGSMITH_HUB}/bug_to_user_story_v2 (público)
-	$(RUN) src/push_prompts.py
+	@$(RUN) src/push_prompts.py
 
 eval: $(PY) ## Avaliação completa no LangSmith (cria experimento e imprime as 5 métricas)
 	$(ENSURE_GATEWAY)
-	$(RUN) src/evaluate.py
+	@$(RUN) src/evaluate.py
 
 validate: test push eval ## Ciclo completo de iteração: testes -> push -> avaliação
 
 eval-baseline: $(PY) ## Avalia o prompt v1 ORIGINAL no mesmo dataset/métricas (PROMPT=owner/nome para outro)
 	$(ENSURE_GATEWAY)
-	$(RUN) scripts/evaluate_baseline.py $(PROMPT)
+	@$(RUN) scripts/evaluate_baseline.py $(PROMPT)
 
 export-experiment: $(PY) ## Exporta experimento p/ Markdown: make export-experiment ID=<selectedSessions> OUT=docs/evidencias/x.md TITLE="..."
 	@test -n "$(ID)" -a -n "$(OUT)" || { echo "Uso: make export-experiment ID=<id> OUT=<arquivo.md> [TITLE=...]"; exit 1; }

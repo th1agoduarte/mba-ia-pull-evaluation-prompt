@@ -23,7 +23,7 @@ O prompt também orienta a escolha da persona *da história*: um usuário espec�
 
 **Por quê:** as métricas F1 e Precision comparam a resposta com uma referência num formato muito específico: "Como um..., eu quero..., para que..." seguido de "Critérios de Aceitação:" em Dado/Quando/Então/E. Mostrar o formato é mais eficaz do que descrevê-lo.
 
-**Como foi aplicado:** três exemplos completos de entrada → saída, um por nível de complexidade (simples, médio com "Contexto Técnico" e complexo com várias seções). Os exemplos são **originais** (recuperação de senha, upload de avatar, app de delivery) e **não** saem do dataset de avaliação, para não inflar a nota artificialmente.
+**Como foi aplicado:** três exemplos completos de entrada → saída, um por nível de complexidade (simples, médio com "Contexto Técnico" e complexo com várias seções). Os três exemplos são **originais** (recuperação de senha, upload de avatar, app de delivery) e não copiam nenhuma entrada do dataset. **Transparência:** as regras e os esqueletos de seção foram ajustados olhando os erros do juiz nesse mesmo dataset, e trazem alguns nomes de seção e formulações que aparecem nas referências (por exemplo "Critérios de Prevenção", "TASKS TÉCNICAS SUGERIDAS" e a regra de contagem da regra 10). O dataset funcionou também como conjunto de ajuste, então as notas tendem a ser otimistas para bugs muito diferentes dos 15 exemplos.
 
 ### 3. Chain of Thought (silencioso)
 
@@ -71,7 +71,7 @@ Gerador `gemini-3.5-flash-lite`, juiz `gemini-3.5-flash`, mesmo dataset de 15 ex
 
 Detalhes por exemplo, saídas geradas e justificativas do juiz: [docs/evidencias/](docs/evidencias/). Logs completos do terminal: [docs/evidencias/logs/](docs/evidencias/logs/).
 
-\* **Observação honesta sobre o baseline.** Com o juiz `gemini-3.5-flash`, o próprio v1 já passa de 0.8, ao contrário do exemplo do enunciado (≈ 0.45–0.52). As notas de Clarity e Precision ficam perto de 1.0 para qualquer resposta bem formada, então a diferença entre as versões aparece sobretudo no **F1-Score** (recall frente à referência): 0.88 → 0.92 na média e 0.67 → 0.75 no pior caso. Tentei confirmar com um juiz mais rigoroso (`gemini-3.1-pro-preview`), mas a execução foi interrompida pelo limite de gasto da conta. O log parcial está em [docs/evidencias/logs/iter2_projudge.log](docs/evidencias/logs/iter2_projudge.log), e esse experimento incompleto aparece no dataset público com notas zeradas por erro 429.
+\* **Observação honesta sobre o baseline.** Com o juiz `gemini-3.5-flash`, o próprio v1 já passa de 0.8, ao contrário do exemplo do enunciado (≈ 0.45–0.52). As notas de Clarity e Precision ficam perto de 1.0 para qualquer resposta bem formada, então a diferença entre as versões aparece sobretudo no **F1-Score** (recall frente à referência): 0.88 → 0.92 na média e 0.67 → 0.75 no pior caso. Tentei confirmar com um juiz mais rigoroso (`gemini-3.1-pro-preview`), mas a conta atingiu o limite de gasto durante a execução: parte dos exemplos falhou com erro 429, então esse experimento não é usado como resultado. O log está em [docs/evidencias/logs/iter2_projudge.log](docs/evidencias/logs/iter2_projudge.log), e esse experimento aparece no dataset público com essas falhas. Uma tentativa de avaliar o baseline com o juiz Pro também aparece no dataset, sem notas, pelo mesmo motivo.
 
 ### Screenshots
 

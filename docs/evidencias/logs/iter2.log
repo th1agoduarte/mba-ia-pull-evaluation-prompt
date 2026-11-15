@@ -1,0 +1,85 @@
+venv/bin/python src/evaluate.py
+
+==================================================
+AVALIAÇÃO DE PROMPTS OTIMIZADOS
+==================================================
+
+Provider: google
+Modelo Principal: gemini-3.5-flash-lite
+Modelo de Avaliação: gemini-3.5-flash
+
+Criando dataset de avaliação: mba-ia-pull-evaluation-prompt-eval...
+   ✓ Carregados 15 exemplos do arquivo datasets/bug_to_user_story.jsonl
+   ✓ Dataset 'mba-ia-pull-evaluation-prompt-eval' já existe, usando existente
+   ✓ https://smith.langchain.com/o/6d7ea03f-f7a8-4d24-a710-a6e7a65a2954/datasets/98b42a01-713c-49f1-8059-01f938c7217d
+
+======================================================================
+PROMPTS PARA AVALIAR
+======================================================================
+
+Este script irá puxar prompts do LangSmith Hub.
+Certifique-se de ter feito push dos prompts antes de avaliar:
+  python src/push_prompts.py
+
+
+🔍 Avaliando: evaluation-prompt/bug_to_user_story_v2
+   Puxando prompt do LangSmith Hub: evaluation-prompt/bug_to_user_story_v2
+   ✓ Prompt carregado com sucesso
+   Rodando experimento no LangSmith...
+View the evaluation results for experiment: 'evaluation-prompt-bug_to_user_story_v2-dc46ad83' at:
+https://smith.langchain.com/o/6d7ea03f-f7a8-4d24-a710-a6e7a65a2954/datasets/98b42a01-713c-49f1-8059-01f938c7217d/compare?selectedSessions=4131e78b-17c3-4031-990d-47d318366cc6
+
+
+      [1] F1:0.86 Clarity:1.00 Precision:1.00
+      [2] F1:0.89 Clarity:1.00 Precision:1.00
+      [3] F1:0.96 Clarity:1.00 Precision:1.00
+      [4] F1:0.75 Clarity:0.98 Precision:1.00
+      [5] F1:0.92 Clarity:1.00 Precision:0.98
+      [6] F1:0.92 Clarity:0.98 Precision:1.00
+      [7] F1:0.92 Clarity:0.90 Precision:0.97
+      [8] F1:0.90 Clarity:1.00 Precision:0.98
+      [9] F1:1.00 Clarity:1.00 Precision:0.97
+      [10] F1:0.92 Clarity:1.00 Precision:0.98
+      [11] F1:0.97 Clarity:1.00 Precision:1.00
+      [12] F1:0.87 Clarity:1.00 Precision:0.98
+      [13] F1:0.97 Clarity:1.00 Precision:1.00
+      [14] F1:1.00 Clarity:1.00 Precision:1.00
+      [15] F1:1.00 Clarity:1.00 Precision:1.00
+
+==================================================
+Prompt: evaluation-prompt/bug_to_user_story_v2
+==================================================
+
+Métricas Derivadas:
+  - Helpfulness: 0.99 ✓
+  - Correctness: 0.96 ✓
+
+Métricas Base:
+  - F1-Score: 0.92 ✓
+  - Clarity: 0.99 ✓
+  - Precision: 0.99 ✓
+
+--------------------------------------------------
+📊 MÉDIA GERAL: 0.9707
+--------------------------------------------------
+
+✅ STATUS: APROVADO - Todas as métricas >= 0.8
+
+==================================================
+RESUMO FINAL
+==================================================
+
+Prompts avaliados: 1
+Aprovados: 1
+Reprovados: 0
+
+Resultados no LangSmith (notas gravadas como feedback no experimento):
+  evaluation-prompt/bug_to_user_story_v2
+    https://smith.langchain.com/o/6d7ea03f-f7a8-4d24-a710-a6e7a65a2954/datasets/98b42a01-713c-49f1-8059-01f938c7217d/compare?selectedSessions=4131e78b-17c3-4031-990d-47d318366cc6
+
+✅ Todos os prompts atingiram todas as métricas >= 0.8!
+
+Próximos passos:
+1. Documente o processo no README.md
+2. Capture screenshots das avaliações
+3. Faça commit e push para o GitHub
