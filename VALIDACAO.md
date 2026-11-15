@@ -22,7 +22,7 @@ Roteiro para confirmar, do zero, que cada requisito do [enunciado](DESAFIO.md) e
 
 | # | Verificação | Esperado |
 |---|---|---|
-| 2.1 | `make test` | **6 testes passando**, todos implementados (nenhum `pass` vazio em `tests/test_prompts.py`) |
+| 2.1 | `make test` | **8 testes passando** (os 6 exigidos + 2 extras: variáveis do template e validação de `utils.py`), sem nenhum `pass` vazio |
 | 2.2 | Ler `prompts/bug_to_user_story_v2.yml` | Persona definida, regras explícitas, tratamento de edge cases, exemplos few-shot de entrada/saída, separação system × user, `{bug_report}` só no user prompt |
 | 2.3 | `grep -n techniques_applied -A5 prompts/bug_to_user_story_v2.yml` | Few-shot + pelo menos mais uma técnica (CoT, ToT, Skeleton of Thought, ReAct ou Role Prompting) |
 | 2.4 | README, seção "Técnicas Aplicadas (Fase 2)" | Técnicas, justificativa e exemplo de cada uma |
@@ -59,8 +59,8 @@ make eval PROVIDER=openai         # exige OPENAI_API_KEY + OPENAI_*_MODEL
 
 | # | Comando | Esperado |
 |---|---|---|
-| 5.1 | `pytest tests/test_prompts.py` | 6 passed: `test_prompt_has_system_prompt`, `test_prompt_has_role_definition`, `test_prompt_mentions_format`, `test_prompt_has_few_shot_examples`, `test_prompt_no_todos`, `test_minimum_techniques` |
-| 5.2 | Prova negativa: apague temporariamente a lista `techniques_applied` do v2 e rode `make test-one T=test_minimum_techniques` | O teste **falha** (mostra que o teste realmente verifica). Depois restaure o arquivo com `git checkout prompts/` |
+| 5.1 | `pytest tests/test_prompts.py` | 8 passed, incluindo os 6 exigidos: `test_prompt_has_system_prompt`, `test_prompt_has_role_definition`, `test_prompt_mentions_format`, `test_prompt_has_few_shot_examples`, `test_prompt_no_todos`, `test_minimum_techniques` |
+| 5.2 | Prova negativa: apague temporariamente a lista `techniques_applied` do v2 e rode `make test-one T=test_minimum_techniques` | O teste **falha** (mostra que o teste realmente verifica). Depois restaure o arquivo com `git checkout prompts/bug_to_user_story_v2.yml` |
 
 ## 6. Arquivos que não podem mudar
 

@@ -41,11 +41,17 @@ else
   $(error PROVIDER inválido: '$(PROVIDER)'. Use google | openai | anthropic | aws | gateway)
 endif
 
+# Juiz alternativo só nesta execução (ex.: JUDGE=gemini-3.1-pro-preview), para checar robustez
+JUDGE ?=
+ifneq ($(JUDGE),)
+  RUN_ENV += EVAL_MODEL=$(JUDGE)
+endif
+
 RUN = $(RUN_ENV) $(PY)
 ENSURE_GATEWAY = $(if $(NEEDS_GATEWAY),@$(MAKE) --no-print-directory gateway-up,@true)
 
 .PHONY: help setup env check-env smoke test test-one pull push eval validate \
-        share-dataset gateway-up gateway-down gateway-logs gateway-test clean
+        eval-baseline export-experiment screenshot share-dataset gateway-up gateway-down gateway-logs gateway-test clean
 
 help: ## Lista os alvos
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -88,9 +94,22 @@ eval: $(PY) ## Avaliação completa no LangSmith (cria experimento e imprime as 
 
 validate: test push eval ## Ciclo completo de iteração: testes -> push -> avaliação
 
+eval-baseline: $(PY) ## Avalia o prompt v1 ORIGINAL no mesmo dataset/métricas (PROMPT=owner/nome para outro)
+	$(ENSURE_GATEWAY)
+	$(RUN) scripts/evaluate_baseline.py $(PROMPT)
+
+export-experiment: $(PY) ## Exporta experimento p/ Markdown: make export-experiment ID=<selectedSessions> OUT=docs/evidencias/x.md TITLE="..."
+	@test -n "$(ID)" -a -n "$(OUT)" || { echo "Uso: make export-experiment ID=<id> OUT=<arquivo.md> [TITLE=...]"; exit 1; }
+	$(PY) scripts/export_experiment.py "$(ID)" "$(OUT)" "$(or $(TITLE),Experimento)"
+
+screenshot: ## Screenshot headless de uma URL pública: make screenshot URL=<url> OUT=docs/evidencias/screenshots/x.png
+	@test -n "$(URL)" -a -n "$(OUT)" || { echo "Uso: make screenshot URL=<url> OUT=<arquivo.png>"; exit 1; }
+	google-chrome --headless=new --disable-gpu --no-sandbox --hide-scrollbars --window-size=1600,1100 --virtual-time-budget=20000 --screenshot="$(OUT)" "$(URL)" 2>/dev/null
+	@echo "✓ $(OUT)"
+
 share-dataset: $(PY) ## Gera o link PÚBLICO do dataset+experimentos (exige CONFIRM=yes; o link muda a cada execução)
 	@if [ "$(CONFIRM)" != "yes" ]; then echo "⚠️  Cada execução gera um link NOVO e invalida o anterior. Rode: make share-dataset CONFIRM=yes"; exit 1; fi
-	$(PY) -c 'import os; from dotenv import load_dotenv; load_dotenv(); from langsmith import Client; print(Client().share_dataset(dataset_name=os.environ["LANGSMITH_PROJECT"] + "-eval")["url"])'
+	$(PY) -c 'import os; from dotenv import load_dotenv; load_dotenv(".env"); from langsmith import Client; print(Client().share_dataset(dataset_name=os.environ["LANGSMITH_PROJECT"] + "-eval")["url"])'
 
 gateway-up: ## Sobe o gateway LiteLLM (Docker) e espera ficar saudável
 	@docker compose up -d --wait llm-gateway >/dev/null && echo "✓ gateway em $(GATEWAY_URL)"
