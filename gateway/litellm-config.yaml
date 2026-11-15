@@ -1,0 +1,33 @@
+# Gateway LiteLLM: expõe Anthropic, AWS Bedrock e Gemini atrás de uma API
+# compatível com OpenAI. Assim o projeto usa qualquer provider pelo caminho
+# LLM_PROVIDER=openai que já existe em src/utils.py, sem alterar esse arquivo
+# (o enunciado proíbe alterações em utils.py, evaluate.py e metrics.py).
+#
+# O modelo é escolhido pelo prefixo no nome, por exemplo:
+#   anthropic/claude-haiku-5-5
+#   bedrock/<model-id do Bedrock>
+#   gemini/gemini-3.5-flash
+model_list:
+  - model_name: "anthropic/*"
+    litellm_params:
+      model: "anthropic/*"
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: "bedrock/*"
+    litellm_params:
+      model: "bedrock/*"
+      aws_region_name: os.environ/AWS_REGION
+
+  # Gemini também passa pelo gateway: serve para testar o gateway com a chave
+  # gratuita. No uso normal, o Gemini vai direto (LLM_PROVIDER=google).
+  - model_name: "gemini/*"
+    litellm_params:
+      model: "gemini/*"
+      api_key: os.environ/GOOGLE_API_KEY
+
+litellm_settings:
+  # Descarta parâmetros que o provider de destino não aceita, em vez de devolver erro 400.
+  drop_params: true
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
